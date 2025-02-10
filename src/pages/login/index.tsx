@@ -24,7 +24,7 @@ const LoginPage = ({
   const navigate = useNavigate();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-
+  const URI="https://roomrentweb.gobidev.site";
   // Focus on the email input when the component mounts
   useEffect(() => {
     if (emailRef.current) {
@@ -47,7 +47,7 @@ const LoginPage = ({
     setIsLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/login",
+        `${URI}/login`,
         LoginInput,
         { withCredentials: true }
       );

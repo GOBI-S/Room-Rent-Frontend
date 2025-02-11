@@ -24,7 +24,7 @@ const App = () => {
       <Route path="/searchrooms" element={<Userhome />} />
       <Route path="/searchrooms/:id" element={<UserBookingpage />} />
       <Route path="/Mybooking" element={<Mybooking />}/>
-      <Route path="*" element={<div>404 Not Found</div>} />
+      <Route path="*" element={<div>40 Not Found</div>} />
     </Routes>
   </Suspense>
   );

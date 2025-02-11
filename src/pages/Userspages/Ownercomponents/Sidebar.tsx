@@ -25,12 +25,12 @@ const data = {
     },
     {
       title: "My Rooms",
-      url: "/Myrooms",
+      url: "/myrooms",
       status: false,
     },
     {
       title: "Search Rooms",
-      url: "/Searchrooms",
+      url: "/searchrooms",
       status: false,
     },
     {

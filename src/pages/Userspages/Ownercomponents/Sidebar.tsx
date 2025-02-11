@@ -15,12 +15,12 @@ const data = {
   Ownerdata: [
     {
       title: "Home",
-      url: "/Home",
+      url: "/home",
       status: false,
     },
     {
       title: "CreateRoom",
-      url: "/Createroom",
+      url: "/createroom",
       status: false,
     },
     {

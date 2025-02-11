@@ -36,6 +36,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {  useNavigate } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
 
 type Booking = {
   bookerId: string;
@@ -56,6 +58,8 @@ const Mybbooking = () => {
   // const plugin = React.useRef(
   //   Autoplay({ delay: 2000, stopOnInteraction: true })
   // );
+  const isMobile = useMediaQuery({ maxWidth: 640 });
+  const navigate = useNavigate();
   const [deatilsofroom, setdeatilsofroom] = useState<any>({});
   const [roomNames, setRoomNames] = useState<{ [key: string]: string }>({});
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -146,11 +150,21 @@ const Mybbooking = () => {
   //   );
   //   console.log(rooms);
   // }, [rooms]);
+
   useEffect(() => {
     if (userId) {
       gettinginfo();
     }
   }, [userId]);
+  useEffect(() => {
+    if (isMobile) {
+      redirectfuction(deatilsofroom._); // Redirect only when mobile
+    }
+  }, [isMobile]);
+  const redirectfuction=(id:string)=>{
+    
+    navigate(`/Mybooking/${id}`);
+  }
 
   return (
     <>
@@ -257,7 +271,7 @@ const Mybbooking = () => {
                                           deatilsofroom && (
                                             <Card className="border-none shadow-none ">
                                               <CardHeader>
-                                                <Carousel className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto">
+                                                <Carousel className={`w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto`}>
                                                   <CarouselContent>
                                                     {deatilsofroom.images &&
                                                       deatilsofroom.images.map(
@@ -383,5 +397,4 @@ const Mybbooking = () => {
     </>
   );
 };
-
 export default Mybbooking;

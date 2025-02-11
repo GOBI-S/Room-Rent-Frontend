@@ -24,6 +24,9 @@ const Userhome = React.lazy(
 const Mybooking = React.lazy(
   () => import("./pages/Userspages/Ownercomponents/Mybbooking.tsx")
 );
+const Details = React.lazy(
+  () => import("./pages/Userspages/Ownercomponents/Details.tsx")
+);
 const App = () => {
   return (
     <Suspense
@@ -103,6 +106,7 @@ const App = () => {
         <Route path="/searchrooms" element={<Userhome />} />
         <Route path="/searchrooms/:id" element={<UserBookingpage />} />
         <Route path="/Mybooking" element={<Mybooking />} />
+        <Route path="/Mybooking/:id" element={<Details />} />
         <Route path="*" element={<div>404 Not Found</div>} />
       </Routes>
     </Suspense>

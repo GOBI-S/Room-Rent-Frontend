@@ -48,18 +48,15 @@ type Room = {
   booked: Booking[];
 };
 
-
 const Mybbooking = () => {
-  const URI="https://roomrentweb.gobidev.site";
+  const URI = "https://roomrentweb.gobidev.site";
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const plugin = React.useRef(
-  //   Autoplay({ delay: 2000, stopOnInteraction: true })
-  // );
   const [deatilsofroom, setdeatilsofroom] = useState<any>({});
   const [roomNames, setRoomNames] = useState<{ [key: string]: string }>({});
   const [rooms, setRooms] = useState<Room[]>([]);
   const userId = useAppSelector((state) => state.user.Userid);
+
   const gettinginfo = async () => {
     try {
       const response = await axios.get(`${URI}/bookings/gets`, {
@@ -75,41 +72,29 @@ const Mybbooking = () => {
       setRooms(userBookings);
     } catch (error: any) {
       console.error("Error fetching data:", error.message || error);
-      if (error.response) {
-        console.error("Response Data:", error.response.data);
-        console.error("Status Code:", error.response.status);
-      } else if (error.request) {
-        console.error("No response received from server:", error.request);
-      } else {
-        console.error("Request setup error:", error.message);
-      }
     }
   };
+
   const findRoomById = async (roomid: string) => {
     try {
-      const response = await axios.get(
-        `${URI}/bookingroomdata`,
-        {
-          withCredentials: true,
-          params: { id: roomid },
-        }
-      );
+      const response = await axios.get(`${URI}/bookingroomdata`, {
+        withCredentials: true,
+        params: { id: roomid },
+      });
       return response.data.Propertyname;
     } catch (error) {
       console.error("Error fetching room name:", error);
       return "Unknown Room";
     }
   };
+
   const fetchdata = async (roomid: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(
-        `${URI}/bookingroomdata`,
-        {
-          withCredentials: true,
-          params: { id: roomid },
-        }
-      );
+      const response = await axios.get(`${URI}/bookingroomdata`, {
+        withCredentials: true,
+        params: { id: roomid },
+      });
       setdeatilsofroom(response.data);
     } catch (error) {
       console.error("Error fetching room name:", error);
@@ -134,18 +119,7 @@ const Mybbooking = () => {
       fetchRoomNames();
     }
   }, [rooms]);
-  // findUserBookings(userId,rooms)
-  // useEffect(() => {
-  //   console.log(
-  //     rooms.map((room) => {
-  //       console.log("roomid:", room.roomid);
-  //       room.booked.map((book) => {
-  //         console.log("from:", book.from, "to:", book.to);
-  //       });
-  //     })
-  //   );
-  //   console.log(rooms);
-  // }, [rooms]);
+
   useEffect(() => {
     if (userId) {
       gettinginfo();
@@ -171,19 +145,17 @@ const Mybbooking = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="p-4 max-w-4xl mx-auto"
             >
-              <h2 className="text-2xl font-bold text-white mb-4">
-                My Bookings
-              </h2>
+              <h2 className="text-2xl font-bold text-white mb-4">My Bookings</h2>
 
               {rooms.length > 0 ? (
-                <div className="overflow-x-auto rounded-lg border border-gray-700 shadow-md bg-sidebar  overflow-y-auto max-h-[700px] ">
-                  <Table className="w-full text-white bg-black ">
+                <div className="overflow-x-auto rounded-lg border border-gray-700 shadow-md bg-sidebar overflow-y-auto max-h-[700px]">
+                  <Table className="w-full text-white bg-black">
                     <TableHeader className="bg-sidebar-primary">
-                      <TableRow className="">
-                        <TableHead className="p-3 text-center text-white ">
-                          Propety Name
+                      <TableRow>
+                        <TableHead className="p-3 text-center text-white">
+                          Property Name
                         </TableHead>
-                        <TableHead className="p-3 text-center text-white ">
+                        <TableHead className="p-3 text-center text-white">
                           From
                         </TableHead>
                         <TableHead className="p-3 text-center text-white">
@@ -228,7 +200,7 @@ const Mybbooking = () => {
                                 </DialogTrigger>
                                 <AnimatePresence>
                                   {isOpen && (
-                                    <DialogContent className="sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px]   text-white">
+                                    <DialogContent className="sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px] text-white bg-gray-900">
                                       <motion.div
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
@@ -246,8 +218,7 @@ const Mybbooking = () => {
                                               animate={{ rotate: 360 }}
                                               transition={{
                                                 duration: 1,
-                                                repeat:
-                                                  Number.POSITIVE_INFINITY,
+                                                repeat: Infinity,
                                                 ease: "linear",
                                               }}
                                               className="w-8 h-8 border-4 border-white border-t-transparent rounded-full"
@@ -255,37 +226,24 @@ const Mybbooking = () => {
                                           </div>
                                         ) : (
                                           deatilsofroom && (
-                                            <Card className="border-none shadow-none ">
+                                            <Card className="border-none shadow-none bg-transparent">
                                               <CardHeader>
                                                 <Carousel className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto">
                                                   <CarouselContent>
                                                     {deatilsofroom.images &&
                                                       deatilsofroom.images.map(
-                                                        (
-                                                          url: string,
-                                                          index: number
-                                                        ) => (
-                                                          <CarouselItem
-                                                            key={index}
-                                                          >
+                                                        (url: string, index: number) => (
+                                                          <CarouselItem key={index}>
                                                             <div className="p-1">
                                                               <Card className="bg-transparent">
                                                                 <CardContent className="flex aspect-square items-center justify-center p-2">
                                                                   <motion.img
                                                                     src={url}
-                                                                    alt={`Room ${
-                                                                      index + 1
-                                                                    }`}
+                                                                    alt={`Room ${index + 1}`}
                                                                     className="w-full h-full object-cover rounded-lg"
-                                                                    initial={{
-                                                                      opacity: 0,
-                                                                    }}
-                                                                    animate={{
-                                                                      opacity: 1,
-                                                                    }}
-                                                                    transition={{
-                                                                      duration: 0.5,
-                                                                    }}
+                                                                    initial={{ opacity: 0 }}
+                                                                    animate={{ opacity: 1 }}
+                                                                    transition={{ duration: 0.5 }}
                                                                   />
                                                                 </CardContent>
                                                               </Card>
@@ -294,7 +252,7 @@ const Mybbooking = () => {
                                                         )
                                                       )}
                                                   </CarouselContent>
-                                                  <CarouselPrevious className="hidden sm:flex " />
+                                                  <CarouselPrevious className="hidden sm:flex" />
                                                   <CarouselNext className="hidden sm:flex" />
                                                 </Carousel>
                                               </CardHeader>
@@ -302,46 +260,30 @@ const Mybbooking = () => {
                                               <CardContent>
                                                 <motion.div
                                                   className="flex w-full flex-col justify-normal items-center gap-3 text-center"
-                                                  initial={{
-                                                    opacity: 0,
-                                                    y: 20,
-                                                  }}
+                                                  initial={{ opacity: 0, y: 20 }}
                                                   animate={{ opacity: 1, y: 0 }}
-                                                  transition={{
-                                                    delay: 0.2,
-                                                    duration: 0.5,
-                                                  }}
+                                                  transition={{ delay: 0.2, duration: 0.5 }}
                                                 >
                                                   <h1 className="font-bold tracking-wide text-xl text-white">
                                                     Rent Per Day:{" "}
                                                     <motion.span
                                                       className="text-blue-400"
-                                                      whileHover={{
-                                                        scale: 1.05,
-                                                      }}
-                                                      transition={{
-                                                        type: "spring",
-                                                        stiffness: 300,
-                                                      }}
+                                                      whileHover={{ scale: 1.05 }}
+                                                      transition={{ type: "spring", stiffness: 300 }}
                                                     >
-                                                      {deatilsofroom.Price ||
-                                                        "N/A"}
+                                                      {deatilsofroom.Price || "N/A"}
                                                     </motion.span>
                                                   </h1>
                                                   <p className="text-lg text-gray-300">
                                                     Property Name:{" "}
-                                                    {deatilsofroom.Propertyname ||
-                                                      "N/A"}
+                                                    {deatilsofroom.Propertyname || "N/A"}
                                                   </p>
                                                   <p className="text-lg text-gray-300">
-                                                    Place:{" "}
-                                                    {deatilsofroom.Location ||
-                                                      "N/A"}
+                                                    Place: {deatilsofroom.Location || "N/A"}
                                                   </p>
                                                   <p className="text-lg text-gray-300">
                                                     Contact:{" "}
-                                                    {deatilsofroom.ContactNumber ||
-                                                      "N/A"}
+                                                    {deatilsofroom.ContactNumber || "N/A"}
                                                   </p>
                                                 </motion.div>
                                               </CardContent>

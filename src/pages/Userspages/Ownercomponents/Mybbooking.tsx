@@ -19,6 +19,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Carousel,
@@ -27,7 +36,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type Booking = {
   bookerId: string;
@@ -40,15 +48,18 @@ type Room = {
   booked: Booking[];
 };
 
+
 const Mybbooking = () => {
-  const URI = "https://roomrentweb.gobidev.site";
+  const URI="https://roomrentweb.gobidev.site";
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [deatilsofroom, setdeatilsofroom] = useState<any>(null);
+  // const plugin = React.useRef(
+  //   Autoplay({ delay: 2000, stopOnInteraction: true })
+  // );
+  const [deatilsofroom, setdeatilsofroom] = useState<any>({});
   const [roomNames, setRoomNames] = useState<{ [key: string]: string }>({});
   const [rooms, setRooms] = useState<Room[]>([]);
   const userId = useAppSelector((state) => state.user.Userid);
-
   const gettinginfo = async () => {
     try {
       const response = await axios.get(`${URI}/bookings/gets`, {
@@ -64,29 +75,41 @@ const Mybbooking = () => {
       setRooms(userBookings);
     } catch (error: any) {
       console.error("Error fetching data:", error.message || error);
+      if (error.response) {
+        console.error("Response Data:", error.response.data);
+        console.error("Status Code:", error.response.status);
+      } else if (error.request) {
+        console.error("No response received from server:", error.request);
+      } else {
+        console.error("Request setup error:", error.message);
+      }
     }
   };
-
   const findRoomById = async (roomid: string) => {
     try {
-      const response = await axios.get(`${URI}/bookingroomdata`, {
-        withCredentials: true,
-        params: { id: roomid },
-      });
+      const response = await axios.get(
+        `${URI}/bookingroomdata`,
+        {
+          withCredentials: true,
+          params: { id: roomid },
+        }
+      );
       return response.data.Propertyname;
     } catch (error) {
       console.error("Error fetching room name:", error);
       return "Unknown Room";
     }
   };
-
   const fetchdata = async (roomid: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(`${URI}/bookingroomdata`, {
-        withCredentials: true,
-        params: { id: roomid },
-      });
+      const response = await axios.get(
+        `${URI}/bookingroomdata`,
+        {
+          withCredentials: true,
+          params: { id: roomid },
+        }
+      );
       setdeatilsofroom(response.data);
     } catch (error) {
       console.error("Error fetching room name:", error);
@@ -111,22 +134,23 @@ const Mybbooking = () => {
       fetchRoomNames();
     }
   }, [rooms]);
-
+  // findUserBookings(userId,rooms)
+  // useEffect(() => {
+  //   console.log(
+  //     rooms.map((room) => {
+  //       console.log("roomid:", room.roomid);
+  //       room.booked.map((book) => {
+  //         console.log("from:", book.from, "to:", book.to);
+  //       });
+  //     })
+  //   );
+  //   console.log(rooms);
+  // }, [rooms]);
   useEffect(() => {
     if (userId) {
       gettinginfo();
     }
   }, [userId]);
-
-  const handleOpenChange = (open: boolean, room: Room) => {
-    setIsOpen(open);
-    if (open) {
-      setIsLoading(true);
-      fetchdata(room.roomid).then(() => {
-        setIsLoading(false);
-      });
-    }
-  };
 
   return (
     <>
@@ -147,17 +171,19 @@ const Mybbooking = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="p-4 max-w-4xl mx-auto"
             >
-              <h2 className="text-2xl font-bold text-white mb-4">My Bookings</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">
+                My Bookings
+              </h2>
 
               {rooms.length > 0 ? (
-                <div className="overflow-x-auto rounded-lg border border-gray-700 shadow-md bg-sidebar overflow-y-auto max-h-[700px]">
-                  <Table className="w-full text-white bg-black">
+                <div className="overflow-x-auto rounded-lg border border-gray-700 shadow-md bg-sidebar  overflow-y-auto max-h-[700px] ">
+                  <Table className="w-full text-white bg-black ">
                     <TableHeader className="bg-sidebar-primary">
-                      <TableRow>
-                        <TableHead className="p-3 text-center text-white">
-                          Property Name
+                      <TableRow className="">
+                        <TableHead className="p-3 text-center text-white ">
+                          Propety Name
                         </TableHead>
-                        <TableHead className="p-3 text-center text-white">
+                        <TableHead className="p-3 text-center text-white ">
                           From
                         </TableHead>
                         <TableHead className="p-3 text-center text-white">
@@ -186,39 +212,42 @@ const Mybbooking = () => {
                               {new Date(booking.to).toLocaleDateString()}
                             </TableCell>
                             <TableCell className="p-3 text-center">
-                              <Popover
-                                open={isOpen}
-                                onOpenChange={(open) => handleOpenChange(open, room)}
-                              >
-                                <PopoverTrigger asChild>
+                              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                                <DialogTrigger asChild>
                                   <Button
                                     variant="outline"
+                                    onClick={() => {
+                                      fetchdata(room.roomid);
+                                      setIsOpen(true);
+                                    }}
                                     aria-label="View room details"
                                     className="bg-gray-900 text-white hover:bg-gray-700"
                                   >
                                     Details
                                   </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-screen max-w-[90vw] sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px] p-0 text-white bg-gray-900 border-gray-700">
-                                  <AnimatePresence>
-                                    {isOpen && (
+                                </DialogTrigger>
+                                <AnimatePresence>
+                                  {isOpen && (
+                                    <DialogContent className="sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px]   text-white">
                                       <motion.div
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.95 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="p-4"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 20 }}
+                                        transition={{ duration: 0.3 }}
                                       >
-                                        <h2 className="text-center text-2xl font-bold text-white mb-4">
-                                          Room Details
-                                        </h2>
+                                        <DialogHeader>
+                                          <DialogTitle className="text-center text-2xl font-bold text-white">
+                                            Room Details
+                                          </DialogTitle>
+                                        </DialogHeader>
                                         {isLoading ? (
                                           <div className="flex justify-center items-center h-40">
                                             <motion.div
                                               animate={{ rotate: 360 }}
                                               transition={{
                                                 duration: 1,
-                                                repeat: Infinity,
+                                                repeat:
+                                                  Number.POSITIVE_INFINITY,
                                                 ease: "linear",
                                               }}
                                               className="w-8 h-8 border-4 border-white border-t-transparent rounded-full"
@@ -226,24 +255,37 @@ const Mybbooking = () => {
                                           </div>
                                         ) : (
                                           deatilsofroom && (
-                                            <Card className="border-none shadow-none bg-transparent">
+                                            <Card className="border-none shadow-none ">
                                               <CardHeader>
                                                 <Carousel className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg mx-auto">
                                                   <CarouselContent>
                                                     {deatilsofroom.images &&
                                                       deatilsofroom.images.map(
-                                                        (url: string, index: number) => (
-                                                          <CarouselItem key={index}>
+                                                        (
+                                                          url: string,
+                                                          index: number
+                                                        ) => (
+                                                          <CarouselItem
+                                                            key={index}
+                                                          >
                                                             <div className="p-1">
                                                               <Card className="bg-transparent">
                                                                 <CardContent className="flex aspect-square items-center justify-center p-2">
                                                                   <motion.img
                                                                     src={url}
-                                                                    alt={`Room ${index + 1}`}
+                                                                    alt={`Room ${
+                                                                      index + 1
+                                                                    }`}
                                                                     className="w-full h-full object-cover rounded-lg"
-                                                                    initial={{ opacity: 0 }}
-                                                                    animate={{ opacity: 1 }}
-                                                                    transition={{ duration: 0.5 }}
+                                                                    initial={{
+                                                                      opacity: 0,
+                                                                    }}
+                                                                    animate={{
+                                                                      opacity: 1,
+                                                                    }}
+                                                                    transition={{
+                                                                      duration: 0.5,
+                                                                    }}
                                                                   />
                                                                 </CardContent>
                                                               </Card>
@@ -252,7 +294,7 @@ const Mybbooking = () => {
                                                         )
                                                       )}
                                                   </CarouselContent>
-                                                  <CarouselPrevious className="hidden sm:flex" />
+                                                  <CarouselPrevious className="hidden sm:flex " />
                                                   <CarouselNext className="hidden sm:flex" />
                                                 </Carousel>
                                               </CardHeader>
@@ -260,41 +302,69 @@ const Mybbooking = () => {
                                               <CardContent>
                                                 <motion.div
                                                   className="flex w-full flex-col justify-normal items-center gap-3 text-center"
-                                                  initial={{ opacity: 0, y: 20 }}
+                                                  initial={{
+                                                    opacity: 0,
+                                                    y: 20,
+                                                  }}
                                                   animate={{ opacity: 1, y: 0 }}
-                                                  transition={{ delay: 0.2, duration: 0.5 }}
+                                                  transition={{
+                                                    delay: 0.2,
+                                                    duration: 0.5,
+                                                  }}
                                                 >
-                                                  <h3 className="font-bold tracking-wide text-xl text-white">
+                                                  <h1 className="font-bold tracking-wide text-xl text-white">
                                                     Rent Per Day:{" "}
                                                     <motion.span
                                                       className="text-blue-400"
-                                                      whileHover={{ scale: 1.05 }}
-                                                      transition={{ type: "spring", stiffness: 300 }}
+                                                      whileHover={{
+                                                        scale: 1.05,
+                                                      }}
+                                                      transition={{
+                                                        type: "spring",
+                                                        stiffness: 300,
+                                                      }}
                                                     >
-                                                      {deatilsofroom.Price || "N/A"}
+                                                      {deatilsofroom.Price ||
+                                                        "N/A"}
                                                     </motion.span>
-                                                  </h3>
+                                                  </h1>
                                                   <p className="text-lg text-gray-300">
                                                     Property Name:{" "}
-                                                    {deatilsofroom.Propertyname || "N/A"}
+                                                    {deatilsofroom.Propertyname ||
+                                                      "N/A"}
                                                   </p>
                                                   <p className="text-lg text-gray-300">
-                                                    Place: {deatilsofroom.Location || "N/A"}
+                                                    Place:{" "}
+                                                    {deatilsofroom.Location ||
+                                                      "N/A"}
                                                   </p>
                                                   <p className="text-lg text-gray-300">
                                                     Contact:{" "}
-                                                    {deatilsofroom.ContactNumber || "N/A"}
+                                                    {deatilsofroom.ContactNumber ||
+                                                      "N/A"}
                                                   </p>
                                                 </motion.div>
                                               </CardContent>
                                             </Card>
                                           )
                                         )}
+
+                                        <DialogFooter className="flex justify-center mt-4">
+                                          <DialogClose asChild>
+                                            <Button
+                                              type="button"
+                                              variant="outline"
+                                              className="bg-gray-700 text-white hover:bg-gray-600"
+                                            >
+                                              Close
+                                            </Button>
+                                          </DialogClose>
+                                        </DialogFooter>
                                       </motion.div>
-                                    )}
-                                  </AnimatePresence>
-                                </PopoverContent>
-                              </Popover>
+                                    </DialogContent>
+                                  )}
+                                </AnimatePresence>
+                              </Dialog>
                             </TableCell>
                           </motion.tr>
                         ))

@@ -186,7 +186,7 @@ const Editroom: React.FC = () => {
       console.error(error);
     } finally {
       setisloading(false);
-      navigate("/Roomlist");
+      navigate("/myrooms");
     }
   };
 

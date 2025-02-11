@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useNavigate } from "react-router-dom";
+import 'animate.css';
 
 interface RoomData {
   Email: string;

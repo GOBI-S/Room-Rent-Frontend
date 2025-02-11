@@ -41,6 +41,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { DateRange as DayPickerDateRange } from "react-day-picker";
 import { differenceInCalendarDays } from "date-fns";
+import 'animate.css';
 
 interface Roomtype {
   _id: string;
@@ -304,7 +305,7 @@ const UserBookingpage = () => {
                       id="date"
                       variant="outline"
                       className={cn(
-                        "transition-all duration-300 ease-in-out focus:ring-0 focus:ring-transparent focus:outline-none focus:scale-105",
+                        "transition-all duration-300 ease-in-out focus:ring-0 focus:ring-transparent focus:outline-none focus:scale-105 pl-[50px] pr-[50px]",
                         !date && "text-muted-foreground",
                         "transition-all duration-300 ease-in-out"
                       )}

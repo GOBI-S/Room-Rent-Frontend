@@ -47,7 +47,7 @@ import {
 import DynamicBreadcrumb from "@/hooks/brudcrumbhooks";
 import { AppSidebar } from "./Sidebar";
 import { cn } from "@/lib/utils";
-
+import 'animate.css';
 interface Roomtype {
   _id: string;
   Email: string;

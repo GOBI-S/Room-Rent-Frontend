@@ -36,6 +36,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type Booking = {
   bookerId: string;
@@ -125,6 +126,16 @@ const Mybbooking = () => {
       gettinginfo();
     }
   }, [userId]);
+  const handleOpenChange = (open: boolean,room:any) => {
+    setIsOpen(open)
+    if (open && !deatilsofroom) {
+      setIsLoading(true)
+      fetchdata(room.roomid).then((data) => {
+        setdeatilsofroom(data)
+        setIsLoading(false)
+      })
+    }
+  }
 
   return (
     <>
@@ -145,7 +156,9 @@ const Mybbooking = () => {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="p-4 max-w-4xl mx-auto"
             >
-              <h2 className="text-2xl font-bold text-white mb-4">My Bookings</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">
+                My Bookings
+              </h2>
 
               {rooms.length > 0 ? (
                 <div className="overflow-x-auto rounded-lg border border-gray-700 shadow-md bg-sidebar overflow-y-auto max-h-[700px]">
@@ -184,41 +197,40 @@ const Mybbooking = () => {
                               {new Date(booking.to).toLocaleDateString()}
                             </TableCell>
                             <TableCell className="p-3 text-center">
-                              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                                <DialogTrigger asChild>
+                              <Popover
+                                open={isOpen}
+                                onOpenChange={(e)=>handleOpenChange(e,room)}
+                              >
+                                <PopoverTrigger asChild>
                                   <Button
                                     variant="outline"
-                                    onClick={() => {
-                                      fetchdata(room.roomid);
-                                      setIsOpen(true);
-                                    }}
                                     aria-label="View room details"
                                     className="bg-gray-900 text-white hover:bg-gray-700"
                                   >
                                     Details
                                   </Button>
-                                </DialogTrigger>
-                                <AnimatePresence>
-                                  {isOpen && (
-                                    <DialogContent className="sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px] text-white bg-gray-900">
+                                </PopoverTrigger>
+                                <PopoverContent className="w-screen max-w-[90vw] sm:max-w-[425px] md:max-w-[600px] lg:max-w-[800px] p-0 text-white bg-gray-900 border-gray-700">
+                                  <AnimatePresence>
+                                    {isOpen && (
                                       <motion.div
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 20 }}
-                                        transition={{ duration: 0.3 }}
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="p-4"
                                       >
-                                        <DialogHeader>
-                                          <DialogTitle className="text-center text-2xl font-bold text-white">
-                                            Room Details
-                                          </DialogTitle>
-                                        </DialogHeader>
+                                        <h2 className="text-center text-2xl font-bold text-white mb-4">
+                                          Room Details
+                                        </h2>
                                         {isLoading ? (
                                           <div className="flex justify-center items-center h-40">
                                             <motion.div
                                               animate={{ rotate: 360 }}
                                               transition={{
                                                 duration: 1,
-                                                repeat: Infinity,
+                                                repeat:
+                                                  Number.POSITIVE_INFINITY,
                                                 ease: "linear",
                                               }}
                                               className="w-8 h-8 border-4 border-white border-t-transparent rounded-full"
@@ -232,18 +244,31 @@ const Mybbooking = () => {
                                                   <CarouselContent>
                                                     {deatilsofroom.images &&
                                                       deatilsofroom.images.map(
-                                                        (url: string, index: number) => (
-                                                          <CarouselItem key={index}>
+                                                        (
+                                                          url: string,
+                                                          index: number
+                                                        ) => (
+                                                          <CarouselItem
+                                                            key={index}
+                                                          >
                                                             <div className="p-1">
                                                               <Card className="bg-transparent">
                                                                 <CardContent className="flex aspect-square items-center justify-center p-2">
                                                                   <motion.img
                                                                     src={url}
-                                                                    alt={`Room ${index + 1}`}
+                                                                    alt={`Room ${
+                                                                      index + 1
+                                                                    }`}
                                                                     className="w-full h-full object-cover rounded-lg"
-                                                                    initial={{ opacity: 0 }}
-                                                                    animate={{ opacity: 1 }}
-                                                                    transition={{ duration: 0.5 }}
+                                                                    initial={{
+                                                                      opacity: 0,
+                                                                    }}
+                                                                    animate={{
+                                                                      opacity: 1,
+                                                                    }}
+                                                                    transition={{
+                                                                      duration: 0.5,
+                                                                    }}
                                                                   />
                                                                 </CardContent>
                                                               </Card>
@@ -260,53 +285,57 @@ const Mybbooking = () => {
                                               <CardContent>
                                                 <motion.div
                                                   className="flex w-full flex-col justify-normal items-center gap-3 text-center"
-                                                  initial={{ opacity: 0, y: 20 }}
+                                                  initial={{
+                                                    opacity: 0,
+                                                    y: 20,
+                                                  }}
                                                   animate={{ opacity: 1, y: 0 }}
-                                                  transition={{ delay: 0.2, duration: 0.5 }}
+                                                  transition={{
+                                                    delay: 0.2,
+                                                    duration: 0.5,
+                                                  }}
                                                 >
-                                                  <h1 className="font-bold tracking-wide text-xl text-white">
+                                                  <h3 className="font-bold tracking-wide text-xl text-white">
                                                     Rent Per Day:{" "}
                                                     <motion.span
                                                       className="text-blue-400"
-                                                      whileHover={{ scale: 1.05 }}
-                                                      transition={{ type: "spring", stiffness: 300 }}
+                                                      whileHover={{
+                                                        scale: 1.05,
+                                                      }}
+                                                      transition={{
+                                                        type: "spring",
+                                                        stiffness: 300,
+                                                      }}
                                                     >
-                                                      {deatilsofroom.Price || "N/A"}
+                                                      {deatilsofroom.Price ||
+                                                        "N/A"}
                                                     </motion.span>
-                                                  </h1>
+                                                  </h3>
                                                   <p className="text-lg text-gray-300">
                                                     Property Name:{" "}
-                                                    {deatilsofroom.Propertyname || "N/A"}
+                                                    {deatilsofroom.Propertyname ||
+                                                      "N/A"}
                                                   </p>
                                                   <p className="text-lg text-gray-300">
-                                                    Place: {deatilsofroom.Location || "N/A"}
+                                                    Place:{" "}
+                                                    {deatilsofroom.Location ||
+                                                      "N/A"}
                                                   </p>
                                                   <p className="text-lg text-gray-300">
                                                     Contact:{" "}
-                                                    {deatilsofroom.ContactNumber || "N/A"}
+                                                    {deatilsofroom.ContactNumber ||
+                                                      "N/A"}
                                                   </p>
                                                 </motion.div>
                                               </CardContent>
                                             </Card>
                                           )
                                         )}
-
-                                        <DialogFooter className="flex justify-center mt-4">
-                                          <DialogClose asChild>
-                                            <Button
-                                              type="button"
-                                              variant="outline"
-                                              className="bg-gray-700 text-white hover:bg-gray-600"
-                                            >
-                                              Close
-                                            </Button>
-                                          </DialogClose>
-                                        </DialogFooter>
                                       </motion.div>
-                                    </DialogContent>
-                                  )}
-                                </AnimatePresence>
-                              </Dialog>
+                                    )}
+                                  </AnimatePresence>
+                                </PopoverContent>
+                              </Popover>
                             </TableCell>
                           </motion.tr>
                         ))

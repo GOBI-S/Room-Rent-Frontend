@@ -58,7 +58,6 @@ const LoginPage = ({
       if (navitems) {
         const parsedNavItems = JSON.parse(navitems);
         dispatch(
-         
           setUser({
             name: parsedNavItems.Name,
             email: parsedNavItems.Email,

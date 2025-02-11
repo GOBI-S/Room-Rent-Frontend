@@ -56,6 +56,7 @@ const Olistroom = () => {
       const response = await axios.delete(`${URI}/Delete`, {
         data: data,
       });
+      window.location.reload();
       console.log("from delete api server side", response.data.message);
     } catch (error) {
       console.error(error);

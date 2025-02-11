@@ -53,10 +53,10 @@ const LoginPage = ({
         LoginInput,
         { withCredentials: true }
       );
-
+      const responsed=response.data
       const navitems = Cookies.get("navkeys");
-      console.log(navitems)
-      console.log("Response from server:", response.data.message);
+      if(responsed){}
+      // console.log("Response from server:", response.data.message);
       if (navitems) {
         const parsedNavItems = JSON.parse(navitems);
         dispatch(

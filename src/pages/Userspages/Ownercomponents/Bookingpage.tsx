@@ -2,7 +2,6 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-  useSidebar,
 } from "@/components/ui/sidebar"; // Import useSidebar hook
 import { AppSidebar } from "./Sidebar";
 import DynamicBreadcrumb from "@/hooks/brudcrumbhooks";
@@ -364,7 +363,6 @@ const UserBookingpage = () => {
                   </h1>
                 </div>
               </CardContent>
-
               <CardFooter>
                 <Button
                   onClick={() => {
